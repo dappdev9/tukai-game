@@ -3532,6 +3532,7 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.Text.Acts.SetFontColor,
 		C3.Plugins.Text.Acts.SetVisible,
 		C3.Plugins.Button.Acts.SetVisible,
+		C3.Plugins.System.Cnds.OnLayoutEnd,
 		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.Text.Acts.Destroy,
 		C3.Plugins.System.Cnds.ForEach,
@@ -3540,25 +3541,25 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.System.Acts.ResetPersisted,
 		C3.Plugins.Dictionary.Acts.Clear,
 		C3.Plugins.Browser.Acts.RequestFullScreen,
-		C3.Plugins.System.Cnds.OnLayoutEnd,
 		C3.Plugins.Audio.Acts.StopAll,
 		C3.Plugins.Json.Acts.SetArray,
 		C3.Plugins.Json.Cnds.ForEach,
 		C3.Plugins.Json.Acts.SetObject,
 		C3.Plugins.Json.Acts.SetValue,
 		C3.Plugins.Json.Acts.SubtractFrom,
-		C3.Plugins.AJAX.Acts.SetHeader,
 		C3.Plugins.AJAX.Acts.Request,
+		C3.Plugins.TextBox.Acts.SetText,
+		C3.Plugins.AJAX.Cnds.OnError,
+		C3.Plugins.Text.Acts.AppendText,
+		C3.Plugins.List.Acts.Clear,
+		C3.Plugins.TextBox.Exps.Text,
 		C3.Plugins.AJAX.Cnds.OnComplete,
 		C3.Plugins.Json.Acts.Parse,
 		C3.Plugins.AJAX.Exps.LastData,
-		C3.Plugins.AJAX.Cnds.OnError,
-		C3.Plugins.Text.Acts.AppendText,
-		C3.Plugins.AJAX.Exps.Progress,
-		C3.Plugins.AJAX.Cnds.OnProgress,
+		C3.Plugins.System.Cnds.Repeat,
+		C3.Plugins.Json.Cnds.CompareValue,
 		C3.Plugins.List.Acts.AddItem,
-		C3.Plugins.Json.Exps.Get,
-		C3.Plugins.TextBox.Exps.Text
+		C3.Plugins.Json.Exps.Get
 		];
 	};
 	self.C3_JsPropNameTable = [
@@ -3780,6 +3781,7 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		{input_name: 0},
 		{input_city: 0},
 		{player_score: 0},
+		{input_school: 0},
 		{lives: 0},
 		{experience: 0},
 		{isAttacking: 0},
@@ -3823,9 +3825,13 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		{book_open: 0},
 		{overlap: 0},
 		{activeMission: 0},
+		{mission_open: 0},
 		{player_coins_lb: 0},
 		{player_name_lb: 0},
-		{player_city_lb: 0}
+		{player_city_lb: 0},
+		{player_school_lb: 0},
+		{resultsSaved: 0},
+		{maxScore: 0}
 	];
 }
 
@@ -4175,8 +4181,11 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		() => 3,
 		() => "shop_bg",
 		() => "house_bg",
-		() => "Home group",
+		() => "Missions",
 		() => "home_bg",
+		() => "mission_bg",
+		() => "mission_game",
+		() => "mission_text",
 		() => "Book",
 		() => "Book control",
 		() => "book text",
@@ -4252,10 +4261,6 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		() => "Суккалый торгач, ахырда чөй чыгып, бушап китеп,\nШүрәленең бармагы калды кысылды шап итеп.\n\nСизде эшне Шүрәле дә: кычкыра да бакыра,\nСызлана һәм ярдәменә шүрәлеләр чакыра.\n\nХәзер инде Шүрәле безнең Җегеткә ялына,\nТәүбә итә эшләреннән, изгелеккә салына:\n\n— Син бераз кызган мине, коткарчы, и адәм генәм;\nМондин ары үзеңә, угълыңа, нәслеңгә тимәм.\n\nБашкалардан да тидермәм, ул минем дустым диеп,\nАңгар урманда йөрергә мин үзем куштым, диеп.\n\nБик авырта кулларым, дустым, җибәр, зинһар, җибәр;—\nШүрәлене рәнҗетүдән нәрсә бар сиңа, ни бар?\n\nТибрәнә дә йолкына, бичара гакълыннан шаша;\nШул арада яшь Җегет өйгә китәргә маташа.",
 		() => "Ат башыннан тоткан ул, бу Шүрәлене белми дә;\nУл моның фөрьядларын асла колакка элми дә.\n\n— И Җегет, һич юк икәндер мәрхәмәт хиссең синең;\nӘйтче, зинһар, мәрхәмәтсез! Кем син? Исмең кем синең?\n\nИртәгә килгәнче дустлар тәндә җаным торса гәр,\nШул фәлән атлы кеше кысты диермен сорсалар.\n\n— Әйтсәм әйтим, син белеп кал: чын атым Былтыр минем.\nБу Җегет абзаң булыр бу, бик белеп тор син, энем!\n\nШүрәле фөрьяд итәдер; аудан ычкынмак була\nҺәм дә, ычкынгач, Җегеткә бер-бер эш кылмак була.\n\nКычкыра: «Кысты, харап итте явыз Былтыр мине,\nАһ, үләм бит, бу бәладән кем килеп йолкыр мине?»\n\nИртәгесен шүрәлеләр бу фәкыйрьне тиргиләр:\n— Син җүләрсең, син котырган, син тилергәнсең, — диләр.",
 		() => "Әйтәләр: «Кычкырма син, тиз яхшылык берлән тыел!\nИ җүләр! Кысканга былтыр, кычкыралармы быел!?»",
-		() => "Missions",
-		() => "mission_bg",
-		() => "mission_game",
-		() => "mission_text",
 		() => "И туган тел, и матур тел, әткәм-әнкәмнең теле!\nДөньяда күп нәрсә белдем син туган тел аркылы.\nИң элек бу тел белән әнкәм бишектә көйләгән,\nАннары төннәр буе әбкәм хикәят сөйләгән.",
 		() => "Әйдәле, Акбай! өйрән син, арт аягың берлә тор;\nАума, аума! туп-туры тор, төз утыр, яхшы утыр!\n\n— Ник газаплыйсың болай син, мин әле бик кечкенә;\nМин туганга тик ике айлап булыр йә өч кенә.",
 		() => "Тау башына салынгандыр безнең авыл,\nБер чишмә бар, якын безнең авылга ул;\nАулыбызның ямен, суы тәмен беләм,\nШуңар күрә сөям җаным-тәнем белән.",
@@ -4285,32 +4290,41 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		() => "mission_9",
 		() => "mission_10",
 		() => "mission_11",
-		() => "House group",
 		() => "shop",
 		() => "shop.1.name",
 		() => "iron",
 		() => "shop.1.id",
 		() => "shop.1.count",
 		() => "shop.1.price",
-		() => "Authorization",
-		() => "Bearer CFiHA3/TbvaUdaNDr4kDlEDQqAzEGQNV86yXqfcZtmk=",
 		() => "get_app",
-		() => "https://v1.userbase.com/v1/admin/users/8285db61-8908-4c37-bd53-18080cd0cc24",
+		() => "https://tatar-game-tukai.glitch.me/players",
 		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => and(("\n" + "error: "), f0());
+			const v0 = p._GetNode(0).GetVar();
+			return () => and("", v0.GetValue());
 		},
+		() => "\nсервер өзеклеге!",
+		() => "\nмәгълүматлар җибәрәбез...",
+		() => "add_result",
 		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			return () => and(("\n" + "progress: "), f0());
+			const v0 = p._GetNode(0).GetVar();
+			const v1 = p._GetNode(1).GetVar();
+			const v2 = p._GetNode(2).GetVar();
+			const v3 = p._GetNode(3).GetVar();
+			return () => and((((((("https://tatar-game-tukai.glitch.me/addplayer/" + v0.GetValue()) + "/") + v1.GetValue()) + "/") + v2.GetValue()) + "/"), v3.GetValue());
+		},
+		() => ".coins",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => (v0.GetValue()).toString();
 		},
 		p => {
 			const n0 = p._GetNode(0);
-			return () => and("", n0.ExpObject(".name"));
+			const n1 = p._GetNode(1);
+			const n2 = p._GetNode(2);
+			const n3 = p._GetNode(3);
+			return () => and((and((and((and("", n0.ExpObject(".name")) + "   -   "), n1.ExpObject(".city")) + "   -   "), n2.ExpObject(".school")) + "   -   "), n3.ExpObject(".coins"));
 		},
-		() => "name",
-		() => "city",
-		() => "coins"
+		() => "\nуңышлы сакланган!"
 	];
 }
 
